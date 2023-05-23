@@ -10,10 +10,6 @@ go run ./cmd/reader/main.go
 ```
 go run ./cmd/sender/main.go
 ```
-# Run sender:
-```
-go run ./cmd/sender/main.go
-```
 # Get order by uid from cache:
 ```
 localhost:4000/order/:uid
