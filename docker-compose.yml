@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: postgresL0
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: orderswb
+    ports:
+      - 5432:5432
+
+
+  nats-streaming:
+    image: nats-streaming:latest
+    container_name: nats-striamingL0
+    ports:
+    - 4222:4222

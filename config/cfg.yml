@@ -1,0 +1,13 @@
+port: "4000"
+
+nats:
+  url: "nats://localhost:4222"
+  clusterid: "test-cluster"
+  clientid: "order-reader"
+
+db:
+  host: "localhost"
+  port: "5432"
+  dbname: "orderswb"
+  user: "postgres"
+  sslmode: "disable"
