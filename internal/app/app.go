@@ -53,7 +53,7 @@ func New() *App {
 
 	a.handler = handlers.New(a.repo)
 
-	log.Println("The New Application Created")
+	log.Println("New application created")
 	return a
 }
 
@@ -75,13 +75,13 @@ func (a *App) Run() {
 		}
 	}()
 
-	log.Print("The App Successfully Started")
+	log.Print("Application successfully started")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
-	log.Print("The App Shutting Down")
+	log.Print("Application is shutting down")
 
 	if err := a.httpServer.Stop(ctx); err != nil {
 		log.Fatalf("error occured on server shutting down: %s", err.Error())
@@ -95,5 +95,5 @@ func (a *App) Run() {
 		log.Fatalf("error occured on db connection close: %s", err.Error())
 	}
 
-	log.Print("The App Successfully Shutted Down")
+	log.Print("Application successfully shutted down")
 }

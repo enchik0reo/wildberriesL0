@@ -61,7 +61,7 @@ func (s *Stan) GetMsg(ctx context.Context, repo Repo) error {
 }
 
 func validate(message []byte) (string, error) {
-	chk := models.Check{}
+	chk := models.Basic{}
 
 	err := json.Unmarshal(message, &chk)
 	if err != nil {

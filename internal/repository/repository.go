@@ -12,7 +12,7 @@ import (
 type Cacher interface {
 	Save(o models.Order)
 	GetById(uid string) ([]byte, error)
-	Chk(uid string) ([]byte, bool)
+	Check(uid string) ([]byte, bool)
 }
 
 type Repository struct {
@@ -37,7 +37,7 @@ func New(s storage.Storage, c Cacher) *Repository {
 }
 
 func (r *Repository) Save(ctx context.Context, order models.Order) error {
-	if _, ok := r.cache.Chk(order.Uid); !ok {
+	if _, ok := r.cache.Check(order.Uid); !ok {
 		if err := r.storage.Save(ctx, order); err != nil {
 			return err
 		}

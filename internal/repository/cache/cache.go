@@ -27,7 +27,7 @@ func (c *Cache) Save(o models.Order) {
 	}
 }
 
-func (c *Cache) Chk(uid string) ([]byte, bool) {
+func (c *Cache) Check(uid string) ([]byte, bool) {
 	c.RLock()
 	defer c.RUnlock()
 
@@ -43,7 +43,7 @@ func (c *Cache) GetById(uid string) ([]byte, error) {
 	c.RLock()
 	defer c.RUnlock()
 
-	msg, ok := c.Chk(uid)
+	msg, ok := c.Check(uid)
 	if !ok {
 		return nil, fmt.Errorf("order with uid: %s doesn't exist in cache", uid)
 	}

@@ -14,14 +14,14 @@ const (
 )
 
 func main() {
-	sC, err := stan.Connect(clusterID, clientID, stan.NatsURL(url))
+	sc, err := stan.Connect(clusterID, clientID, stan.NatsURL(url))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer sC.Close()
+	defer sc.Close()
 
 	for i := 1; i <= 100; i++ {
-		if err = sC.Publish("orders", newOrder(i)); err != nil {
+		if err = sc.Publish("orders", newOrder(i)); err != nil {
 			log.Fatal(err)
 		}
 

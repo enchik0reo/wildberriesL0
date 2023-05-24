@@ -7,7 +7,7 @@ type Order struct {
 	Details []byte `db:"details"`
 }
 
-type Check struct {
+type Basic struct {
 	OrderUid          string    `json:"order_uid"`
 	TrackNumber       string    `json:"track_number"`
 	Entry             string    `json:"entry"`
