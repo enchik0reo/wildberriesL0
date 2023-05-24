@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   postgres:
-    image: postgres:latest
+    image: postgres:15.3-bullseye
     restart: always
     container_name: postgresL0
     environment:
@@ -15,7 +15,7 @@ services:
 
 
   nats-streaming:
-    image: nats-streaming:latest
+    image: nats-streaming:0.25.4-linux
     container_name: nats-striamingL0
     ports:
     - 4222:4222

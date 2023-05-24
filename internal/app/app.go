@@ -41,7 +41,7 @@ func New() *App {
 
 	psql, err := psql.New(a.cfg.DB.Host, a.cfg.DB.Port, a.cfg.DB.User, a.cfg.DB.Password, a.cfg.DB.DBName, a.cfg.DB.SSLMode)
 	if err != nil {
-		log.Fatalf("failed to inicialise DB: %s", err.Error())
+		log.Fatalf("failed to initialize DB: %s", err.Error())
 	}
 
 	a.repo = repository.New(psql, cache)
