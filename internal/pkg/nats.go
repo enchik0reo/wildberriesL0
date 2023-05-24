@@ -65,7 +65,11 @@ func validate(message []byte) (string, error) {
 
 	err := json.Unmarshal(message, &chk)
 	if err != nil {
-		return chk.OrderUid, fmt.Errorf("invalid message: %w", err)
+		return chk.OrderUid, fmt.Errorf("json format: %w", err)
+	}
+
+	if chk.OrderUid == "" {
+		return chk.OrderUid, fmt.Errorf("invalid message")
 	}
 
 	return chk.OrderUid, nil
