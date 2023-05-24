@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/enchik0reo/wildberriesL0/internal/models"
@@ -48,7 +49,14 @@ func (r *Repository) Save(ctx context.Context, order models.Order) error {
 }
 
 func (r *Repository) GetByUid(uid string) ([]byte, error) {
-	return r.cache.GetById(uid)
+	details, err := r.cache.GetById(uid)
+	if err != nil {
+		details, err = r.storage.GetById(uid)
+		if err != nil {
+			return nil, fmt.Errorf("order with uid: %s doesn't exist", uid)
+		}
+	}
+	return details, nil
 }
 
 func (s *Repository) Stop(ctx context.Context) error {

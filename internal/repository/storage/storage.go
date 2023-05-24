@@ -8,6 +8,7 @@ import (
 
 type Storage interface {
 	Save(context.Context, models.Order) error
+	GetById(uid string) ([]byte, error)
 	GetAll(context.Context) ([]models.Order, error)
 	Stop(ctx context.Context) error
 }

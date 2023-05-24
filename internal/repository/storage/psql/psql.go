@@ -47,6 +47,19 @@ func (s *Storage) Save(ctx context.Context, o models.Order) error {
 	return nil
 }
 
+func (s *Storage) GetById(uid string) ([]byte, error) {
+	q := `SELECT details FROM orders WHERE uid = $1`
+
+	row := s.db.QueryRow(q, uid)
+
+	var details []byte
+
+	if err := row.Scan(&details); err != nil {
+		return nil, fmt.Errorf("order with uid: %s doesn't exist in db", uid)
+	}
+	return details, nil
+}
+
 func (s *Storage) GetAll(ctx context.Context) ([]models.Order, error) {
 	q := `SELECT * FROM orders`
 

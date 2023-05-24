@@ -20,7 +20,7 @@ func main() {
 	}
 	defer sC.Close()
 
-	for i := 1; i <= 1000; i++ {
+	for i := 1; i <= 100; i++ {
 		if err = sC.Publish("orders", newOrder(i)); err != nil {
 			log.Fatal(err)
 		}

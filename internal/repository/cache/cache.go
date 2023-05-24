@@ -45,7 +45,7 @@ func (c *Cache) GetById(uid string) ([]byte, error) {
 
 	msg, ok := c.Chk(uid)
 	if !ok {
-		return nil, fmt.Errorf("order with uid: %s doesn't exist", uid)
+		return nil, fmt.Errorf("order with uid: %s doesn't exist in cache", uid)
 	}
 
 	return msg, nil
