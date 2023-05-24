@@ -15,6 +15,7 @@ go run ./cmd/sender/main.go
 ```
 localhost:4000/order/:uid
 ```
+(uids in this example: order[0-100])
 
 ## Stress Tests
 ### WRK
