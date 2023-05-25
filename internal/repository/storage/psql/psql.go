@@ -32,7 +32,7 @@ func New(host, port, user, password, dbname, sslmode string) (*Storage, error) {
 	tableScript := readScript()
 
 	if _, err = db.Exec(tableScript); err != nil {
-		return nil, fmt.Errorf("can't read table script: %w", err)
+		return nil, fmt.Errorf("can't execute table script: %w", err)
 	}
 
 	return &Storage{db: db}, nil

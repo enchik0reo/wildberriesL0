@@ -46,7 +46,7 @@ func (s *Stan) GetMsg(ctx context.Context, repo Repo) error {
 			log.Printf("can't save message: %v", err)
 			return
 		}
-	}, stan.StartWithLastReceived())
+	}, stan.DeliverAllAvailable())
 	if err != nil {
 		return fmt.Errorf("can't subscribe: %w", err)
 	}
