@@ -4,9 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"io"
-	"log"
-	"os"
 
 	"github.com/enchik0reo/wildberriesL0/internal/models"
 
@@ -27,12 +24,6 @@ func New(host, port, user, password, dbname, sslmode string) (*Storage, error) {
 
 	if err = db.Ping(); err != nil {
 		return nil, fmt.Errorf("can't connect to database: %w", err)
-	}
-
-	tableScript := readScript()
-
-	if _, err = db.Exec(tableScript); err != nil {
-		return nil, fmt.Errorf("can't execute table script: %w", err)
 	}
 
 	return &Storage{db: db}, nil
@@ -92,21 +83,4 @@ func (s *Storage) GetAll(ctx context.Context) ([]models.Order, error) {
 
 func (s *Storage) Stop(ctx context.Context) error {
 	return s.db.Close()
-}
-
-func readScript() string {
-	fname := "script/init_table.txt"
-
-	file, err := os.Open(fname)
-	if err != nil {
-		log.Fatalf("can't open script file: %v", err)
-	}
-	defer file.Close()
-
-	bytes, err := io.ReadAll(file)
-	if err != nil {
-		log.Fatalf("can't read script file: %v", err)
-	}
-
-	return string(bytes)
 }
