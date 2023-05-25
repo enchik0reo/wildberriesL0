@@ -3,7 +3,6 @@ module github.com/enchik0reo/wildberriesL0
 go 1.19
 
 require (
-	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
