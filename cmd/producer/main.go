@@ -15,7 +15,7 @@ import (
 const (
 	url       = "nats://localhost:4222"
 	clusterID = "test-cluster"
-	clientID  = "order-sender"
+	clientID  = "order-producer"
 )
 
 func main() {

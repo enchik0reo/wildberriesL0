@@ -3,13 +3,13 @@
 ```
 docker-compose up -d
 ```
-## Run reader:
+## Run consumer:
 ```
-go run ./cmd/reader/main.go
+go run ./cmd/consumer/main.go
 ```
-## Run sender:
+## Run producer:
 ```
-go run ./cmd/sender/main.go
+go run ./cmd/producer/main.go
 ```
 ## Get order by uid from cache:
 ```

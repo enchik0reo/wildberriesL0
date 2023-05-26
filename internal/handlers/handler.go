@@ -26,12 +26,12 @@ func New(repository Repository) *Handler {
 
 func (h *Handler) InitRoute() http.Handler {
 	rtr := httprouter.New()
-	rtr.GET("/order/:uid", h.show)
+	rtr.GET("/order/:uid", h.ShowById)
 
 	return rtr
 }
 
-func (h *Handler) show(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (h *Handler) ShowById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	uid := ps.ByName("uid")
 
 	if uid == "" {
