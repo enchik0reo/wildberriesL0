@@ -1,16 +1,12 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
-
-	"github.com/enchik0reo/wildberriesL0/internal/models"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 type Repository interface {
-	Save(ctx context.Context, order models.Order) error
 	GetByUid(uid string) ([]byte, error)
 }
 

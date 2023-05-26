@@ -11,7 +11,7 @@ import (
 
 	"github.com/enchik0reo/wildberriesL0/internal/config"
 	"github.com/enchik0reo/wildberriesL0/internal/handlers"
-	"github.com/enchik0reo/wildberriesL0/internal/pkg"
+	"github.com/enchik0reo/wildberriesL0/internal/nats"
 	"github.com/enchik0reo/wildberriesL0/internal/repository"
 	"github.com/enchik0reo/wildberriesL0/internal/repository/cache"
 	"github.com/enchik0reo/wildberriesL0/internal/repository/storage/psql"
@@ -22,7 +22,7 @@ type App struct {
 	cfg        *config.Config
 	httpServer *server.Server
 	repo       *repository.Repository
-	nats       *pkg.Stan
+	nats       *nats.Stan
 	handler    *handlers.Handler
 }
 
@@ -46,7 +46,7 @@ func New() *App {
 
 	a.repo = repository.New(psql, cache)
 
-	a.nats, err = pkg.NatsConnect(a.cfg.Nats.ClusterID, a.cfg.Nats.ClientID, a.cfg.Nats.URL)
+	a.nats, err = nats.New(a.cfg.Nats.ClusterID, a.cfg.Nats.ClientID, a.cfg.Nats.URL, a.repo)
 	if err != nil {
 		log.Fatalf("failed to connect nuts: %s", err.Error())
 	}
@@ -61,7 +61,7 @@ func (a *App) Run() {
 	ctx := context.Background()
 
 	go func() {
-		if err := a.nats.GetMsg(ctx, a.repo); err != nil {
+		if err := a.nats.GetMsg(ctx); err != nil {
 			log.Fatalf("error occured while nuts got a message: %s", err.Error())
 		}
 	}()
@@ -87,11 +87,11 @@ func (a *App) Run() {
 		log.Fatalf("error occured on server shutting down: %s", err.Error())
 	}
 
-	if err := a.nats.Conn.Close(); err != nil {
+	if err := a.nats.CloseConnect(); err != nil {
 		log.Fatalf("error occured on nuts connection close: %s", err.Error())
 	}
 
-	if err := a.repo.Stop(ctx); err != nil {
+	if err := a.repo.CloseConnect(ctx); err != nil {
 		log.Fatalf("error occured on db connection close: %s", err.Error())
 	}
 

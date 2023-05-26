@@ -81,6 +81,6 @@ func (s *Storage) GetAll(ctx context.Context) ([]models.Order, error) {
 	return orders, nil
 }
 
-func (s *Storage) Stop(ctx context.Context) error {
+func (s *Storage) CloseConnect(ctx context.Context) error {
 	return s.db.Close()
 }
