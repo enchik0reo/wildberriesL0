@@ -10,8 +10,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type DB interface {
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+	QueryRow(query string, args ...any) *sql.Row
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	Close() error
+}
+
 type Storage struct {
-	db *sql.DB
+	db DB
 }
 
 func New(host, port, user, password, dbname, sslmode string) (*Storage, error) {

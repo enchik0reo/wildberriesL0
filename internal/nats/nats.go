@@ -12,12 +12,17 @@ import (
 	"github.com/nats-io/stan.go"
 )
 
+type Nats interface {
+	Subscribe(subject string, cb stan.MsgHandler, opts ...stan.SubscriptionOption) (stan.Subscription, error)
+	Close() error
+}
+
 type Repository interface {
 	Save(ctx context.Context, order models.Order) error
 }
 
 type Stan struct {
-	conn stan.Conn
+	conn Nats
 	repo Repository
 }
 
