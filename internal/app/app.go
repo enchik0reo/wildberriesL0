@@ -16,6 +16,7 @@ import (
 	"github.com/enchik0reo/wildberriesL0/internal/repository/cache"
 	"github.com/enchik0reo/wildberriesL0/internal/repository/storage/psql"
 	"github.com/enchik0reo/wildberriesL0/internal/server"
+	"github.com/enchik0reo/wildberriesL0/internal/service"
 )
 
 type App struct {
@@ -23,6 +24,7 @@ type App struct {
 	httpServer *server.Server
 	repo       *repository.Repository
 	nats       *nats.Stan
+	service    *service.Service
 	handler    *handlers.Handler
 }
 
@@ -46,10 +48,12 @@ func New() *App {
 
 	a.repo = repository.New(psql, cache)
 
-	a.nats, err = nats.New(a.cfg.Nats.ClusterID, a.cfg.Nats.ClientID, a.cfg.Nats.URL, a.repo)
+	a.nats, err = nats.New(a.cfg.Nats.ClusterID, a.cfg.Nats.ClientID, a.cfg.Nats.URL)
 	if err != nil {
 		log.Fatalf("failed to connect nuts: %s", err.Error())
 	}
+
+	a.service = service.New(a.nats, a.repo)
 
 	a.handler = handlers.New(a.repo)
 
@@ -60,11 +64,7 @@ func New() *App {
 func (a *App) Run() {
 	ctx := context.Background()
 
-	go func() {
-		if err := a.nats.GetMsg(ctx); err != nil {
-			log.Fatalf("error occured while nuts got a message: %s", err.Error())
-		}
-	}()
+	go a.service.Work(ctx)
 
 	go func() {
 		if err := a.httpServer.Run(a.cfg.Port, a.handler.InitRoute()); err != nil {
