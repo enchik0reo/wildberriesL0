@@ -19,10 +19,14 @@ func New() *Cache {
 	}
 }
 
-func (c *Cache) Save(o models.Order) {
-	c.Lock()
-	defer c.Unlock()
-	c.m[o.Uid] = o.Details
+func (c *Cache) Save(o models.Order) error {
+	if ok := c.Check(o.Uid); !ok {
+		c.Lock()
+		c.m[o.Uid] = o.Details
+		c.Unlock()
+		return nil
+	}
+	return fmt.Errorf("order already exists")
 }
 
 func (c *Cache) Check(uid string) bool {

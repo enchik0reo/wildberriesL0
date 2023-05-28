@@ -46,7 +46,7 @@ func (s *Service) Work(ctx context.Context) {
 		}
 
 		if err = s.repo.Save(ctx, models.Order{Uid: uid, Details: msg}); err != nil {
-			log.Printf("can't save message with uid [%s] error: %v", uid, err)
+			log.Printf("can't save order with uid [%s]: %v", uid, err)
 			continue
 		}
 	}
@@ -56,13 +56,13 @@ func (s *Service) Stop(ctx context.Context) error {
 	var errors []byte
 
 	if err := s.nats.CloseConnect(); err != nil {
-		s := fmt.Sprintf("can't close nats connection: %s; ", err.Error())
-		errors = append(errors, []byte(s)...)
+		e := fmt.Sprintf("can't close nats connection: %s; ", err.Error())
+		errors = append(errors, []byte(e)...)
 	}
 
 	if err := s.repo.CloseConnect(ctx); err != nil {
-		s := fmt.Sprintf("can't close repository connection: %s; ", err.Error())
-		errors = append(errors, []byte(s)...)
+		e := fmt.Sprintf("can't close repository connection: %s; ", err.Error())
+		errors = append(errors, []byte(e)...)
 	}
 
 	if len(errors) != 0 {

@@ -40,7 +40,7 @@ func (s *Storage) Save(ctx context.Context, o models.Order) error {
 	q := `INSERT INTO orders VALUES ($1, $2)`
 
 	if _, err := s.db.ExecContext(ctx, q, o.Uid, o.Details); err != nil {
-		return fmt.Errorf("can't save page: %w", err)
+		return err
 	}
 
 	return nil
