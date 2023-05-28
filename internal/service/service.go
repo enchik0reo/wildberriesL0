@@ -41,12 +41,12 @@ func (s *Service) Work(ctx context.Context) {
 
 		uid, err := validate(msg)
 		if err != nil {
-			log.Printf("can't validate message: [%s] error: %v", msg, err)
+			log.Printf("can't validate message [%s] error: %v", msg, err)
 			continue
 		}
 
 		if err = s.repo.Save(ctx, models.Order{Uid: uid, Details: msg}); err != nil {
-			log.Printf("can't save message: [%s] error: %v", msg, err)
+			log.Printf("can't save message with uid [%s] error: %v", uid, err)
 			continue
 		}
 	}

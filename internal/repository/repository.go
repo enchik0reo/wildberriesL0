@@ -18,7 +18,7 @@ type Storage interface {
 type Cache interface {
 	Save(o models.Order)
 	GetById(uid string) ([]byte, error)
-	Check(uid string) ([]byte, bool)
+	Check(uid string) bool
 }
 
 type Repository struct {
@@ -43,15 +43,15 @@ func New(s Storage, c Cache) *Repository {
 }
 
 func (r *Repository) Save(ctx context.Context, order models.Order) error {
-	if _, ok := r.cache.Check(order.Uid); !ok {
-		if err := r.storage.Save(ctx, order); err != nil {
-			return err
-		}
-		r.cache.Save(order)
-	} else {
-		log.Printf("order with uid: %s exists", order.Uid)
+	if ok := r.cache.Check(order.Uid); ok {
+		return fmt.Errorf("order with uid [%s] already exists", order.Uid)
 	}
-	return nil
+
+	r.cache.Save(order)
+
+	err := r.storage.Save(ctx, order)
+
+	return err
 }
 
 func (r *Repository) GetByUid(uid string) ([]byte, error) {
@@ -59,7 +59,7 @@ func (r *Repository) GetByUid(uid string) ([]byte, error) {
 	if err != nil {
 		details, err = r.storage.GetById(uid)
 		if err != nil {
-			return nil, fmt.Errorf("order with uid: %s doesn't exist", uid)
+			return nil, fmt.Errorf("order with uid [%s] doesn't exist", uid)
 		}
 	}
 	return details, nil
