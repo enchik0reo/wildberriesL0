@@ -6,8 +6,11 @@ import (
 	"log"
 
 	"github.com/enchik0reo/wildberriesL0/internal/models"
+
+	_ "github.com/vektra/mockery"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=Storage
 type Storage interface {
 	Save(context.Context, models.Order) error
 	GetById(uid string) ([]byte, error)
@@ -15,6 +18,7 @@ type Storage interface {
 	CloseConnect(ctx context.Context) error
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=Cache
 type Cache interface {
 	Save(o models.Order) error
 	GetById(uid string) ([]byte, error)
@@ -63,13 +67,16 @@ func (r *Repository) Save(ctx context.Context, order models.Order) error {
 
 func (r *Repository) GetByUid(uid string) ([]byte, error) {
 	details, err := r.cache.GetById(uid)
-	if err != nil {
-		details, err = r.storage.GetById(uid)
-		if err != nil {
-			return nil, fmt.Errorf("order with uid [%s] doesn't exist", uid)
-		}
+	if err == nil {
+		return details, err
 	}
-	return details, nil
+
+	details, err = r.storage.GetById(uid)
+	if err == nil {
+		return details, err
+	}
+
+	return nil, fmt.Errorf("doesn't exist")
 }
 
 func (s *Repository) CloseConnect(ctx context.Context) error {

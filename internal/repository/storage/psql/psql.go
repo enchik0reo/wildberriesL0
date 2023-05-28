@@ -54,7 +54,7 @@ func (s *Storage) GetById(uid string) ([]byte, error) {
 	var details []byte
 
 	if err := row.Scan(&details); err != nil {
-		return nil, fmt.Errorf("order with uid: %s doesn't exist in db", uid)
+		return nil, fmt.Errorf("doesn't exist in db; ")
 	}
 	return details, nil
 }

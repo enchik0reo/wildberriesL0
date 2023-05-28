@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -39,7 +40,7 @@ func (h *Handler) ShowById(w http.ResponseWriter, r *http.Request, ps httprouter
 	order, err := h.repo.GetByUid(uid)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte(fmt.Sprintf("order with uid [%s]: %s", uid, err.Error())))
 		return
 	}
 
