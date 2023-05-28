@@ -22,8 +22,6 @@ import (
 type App struct {
 	cfg        *config.Config
 	httpServer *server.Server
-	repo       *repository.Repository
-	nats       *nats.Stan
 	service    *service.Service
 	handler    *handlers.Handler
 }
@@ -46,16 +44,16 @@ func New() *App {
 		log.Fatalf("failed to initialize DB: %s", err.Error())
 	}
 
-	a.repo = repository.New(psql, cache)
+	repo := repository.New(psql, cache)
 
-	a.nats, err = nats.New(a.cfg.Nats.ClusterID, a.cfg.Nats.ClientID, a.cfg.Nats.URL)
+	nats, err := nats.New(a.cfg.Nats.ClusterID, a.cfg.Nats.ClientID, a.cfg.Nats.URL)
 	if err != nil {
 		log.Fatalf("failed to connect nuts: %s", err.Error())
 	}
 
-	a.service = service.New(a.nats, a.repo)
+	a.service = service.New(nats, repo)
 
-	a.handler = handlers.New(a.repo)
+	a.handler = handlers.New(repo)
 
 	log.Println("New application created")
 	return a
@@ -87,12 +85,8 @@ func (a *App) Run() {
 		log.Fatalf("error occured on server shutting down: %s", err.Error())
 	}
 
-	if err := a.nats.CloseConnect(); err != nil {
-		log.Fatalf("error occured on nuts connection close: %s", err.Error())
-	}
-
-	if err := a.repo.CloseConnect(ctx); err != nil {
-		log.Fatalf("error occured on db connection close: %s", err.Error())
+	if err := a.service.Stop(ctx); err != nil {
+		log.Fatalf("error occured on service shutting down: %s", err.Error())
 	}
 
 	log.Print("Application successfully shutted down")

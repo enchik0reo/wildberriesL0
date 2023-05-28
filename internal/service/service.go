@@ -11,10 +11,12 @@ import (
 
 type Nats interface {
 	GetMsg(chan []byte)
+	CloseConnect() error
 }
 
 type Repository interface {
 	Save(context.Context, models.Order) error
+	CloseConnect(ctx context.Context) error
 }
 
 type Service struct {
@@ -48,6 +50,26 @@ func (s *Service) Work(ctx context.Context) {
 			continue
 		}
 	}
+}
+
+func (s *Service) Stop(ctx context.Context) error {
+	var errors []byte
+
+	if err := s.nats.CloseConnect(); err != nil {
+		s := fmt.Sprintf("can't close nats connection: %s; ", err.Error())
+		errors = append(errors, []byte(s)...)
+	}
+
+	if err := s.repo.CloseConnect(ctx); err != nil {
+		s := fmt.Sprintf("can't close repository connection: %s; ", err.Error())
+		errors = append(errors, []byte(s)...)
+	}
+
+	if len(errors) != 0 {
+		return fmt.Errorf("can't stop service: %s", errors)
+	}
+
+	return nil
 }
 
 func validate(message []byte) (string, error) {
