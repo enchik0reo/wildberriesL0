@@ -35,14 +35,15 @@ Transfer/sec:     51.87MB
 
 ### Vegeta
 ```
-echo "GET http://localhost:4000/order/order1" | vegeta attack -duration=30s -rate=1000 | vegeta report
+echo "GET http://localhost:4000/order/order1" | vegeta attack -duration=30s -rate=10000 | vegeta report
 
-Requests      [total, rate, throughput]  30000, 1000.04, 1000.03
-Duration      [total, attack, wait]      29.999011235s, 29.998832912s, 178.323µs
-Latencies     [mean, 50, 95, 99, max]    252.793µs, 222.682µs, 422.071µs, 625.057µs, 12.302956ms
-Bytes In      [total, mean]              30000000, 1000.00
+Requests      [total, rate, throughput]  300000, 10000.36, 10000.31
+Duration      [total, attack, wait]      29.99908055s, 29.998914501s, 166.049µs
+Latencies     [mean, 50, 95, 99, max]    193.004µs, 147.926µs, 438.727µs, 1.034802ms, 13.220574ms
+Bytes In      [total, mean]              300000000, 1000.00
 Bytes Out     [total, mean]              0, 0.00
 Success       [ratio]                    100.00%
-Status Codes  [code:count]               200:30000  
+Status Codes  [code:count]               200:300000  
 Error Set:
 ```
+![Plot](./images/vegeta-plot.jpg?raw=true)
