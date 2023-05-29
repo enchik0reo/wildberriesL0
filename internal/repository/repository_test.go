@@ -93,12 +93,12 @@ func TestGetMsg(t *testing.T) {
 				On("Save", tt.args.ctx, tt.args.order).
 				Return(tt.args.errStor)
 
-			s := &Repository{
+			r := &Repository{
 				cache:   cacheMc,
 				storage: storageMc,
 			}
 
-			err := s.Save(tt.args.ctx, tt.args.order)
+			err := r.Save(tt.args.ctx, tt.args.order)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Save() error = %v, wantErr = %v", err, tt.wantErr)
 				return
@@ -181,12 +181,12 @@ func TestGetByUid(t *testing.T) {
 				On("GetById", tt.args.order.Uid).
 				Return(tt.args.order.Details, tt.args.errStor)
 
-			s := &Repository{
+			r := &Repository{
 				cache:   cacheMc,
 				storage: storageMc,
 			}
 
-			details, err := s.GetByUid(tt.args.order.Uid)
+			details, err := r.GetByUid(tt.args.order.Uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetByUid() error = %v, wantErr = %v", err, tt.wantErr)
 				return

@@ -10,6 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=DB
 type DB interface {
 	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
 	QueryRow(query string, args ...any) *sql.Row
@@ -49,11 +50,9 @@ func (s *Storage) Save(ctx context.Context, o models.Order) error {
 func (s *Storage) GetById(uid string) ([]byte, error) {
 	q := `SELECT details FROM orders WHERE uid = $1`
 
-	row := s.db.QueryRow(q, uid)
-
 	var details []byte
 
-	if err := row.Scan(&details); err != nil {
+	if err := s.db.QueryRow(q, uid).Scan(&details); err != nil {
 		return nil, fmt.Errorf("doesn't exist in db; ")
 	}
 	return details, nil

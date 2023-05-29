@@ -7,13 +7,13 @@ import (
 	"github.com/nats-io/stan.go"
 )
 
-type Nats interface {
+type NatsConn interface {
 	Subscribe(subject string, cb stan.MsgHandler, opts ...stan.SubscriptionOption) (stan.Subscription, error)
 	Close() error
 }
 
 type Stan struct {
-	conn Nats
+	conn NatsConn
 }
 
 func New(clusterID, clientID, url string) (*Stan, error) {

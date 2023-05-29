@@ -9,11 +9,13 @@ import (
 	"github.com/enchik0reo/wildberriesL0/internal/models"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=Nats
 type Nats interface {
 	GetMsg(chan []byte)
 	CloseConnect() error
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=Repository
 type Repository interface {
 	Save(context.Context, models.Order) error
 	CloseConnect(ctx context.Context) error
