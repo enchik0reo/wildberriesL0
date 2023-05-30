@@ -73,6 +73,7 @@ func (r *Repository) GetByUid(uid string) ([]byte, error) {
 
 	details, err = r.storage.GetById(uid)
 	if err == nil {
+		r.cache.Save(models.Order{Uid: uid, Details: details})
 		return details, err
 	}
 

@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	Port string `yaml:"port" env-default:"8080"`
-	Nats struct {
+	Port      string `yaml:"port" env-default:"8080"`
+	CacheSize int    `yaml:"cache_size"`
+	Nats      struct {
 		URL       string `yaml:"url"`
 		ClusterID string `yaml:"clusterid"`
 		ClientID  string `yaml:"clientid"`

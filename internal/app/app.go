@@ -37,7 +37,7 @@ func New() *App {
 
 	a.httpServer = server.New()
 
-	cache := cache.New()
+	cache := cache.New(a.cfg.CacheSize)
 
 	psql, err := psql.New(a.cfg.DB.Host, a.cfg.DB.Port, a.cfg.DB.User, a.cfg.DB.Password, a.cfg.DB.DBName, a.cfg.DB.SSLMode)
 	if err != nil {
