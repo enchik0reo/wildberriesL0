@@ -3,6 +3,7 @@ module github.com/enchik0reo/wildberriesL0
 go 1.19
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.21.0
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
-	github.com/brianvoe/gofakeit/v6 v6.21.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect

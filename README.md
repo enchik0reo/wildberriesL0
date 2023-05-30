@@ -46,4 +46,3 @@ Success       [ratio]                    100.00%
 Status Codes  [code:count]               200:300000  
 Error Set:
 ```
-![Plot](./images/vegeta-plot.jpg?raw=true)

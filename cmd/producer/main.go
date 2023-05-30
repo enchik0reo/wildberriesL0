@@ -31,8 +31,6 @@ func main() {
 		}
 
 		log.Printf("order №%d published\n", i)
-
-		time.Sleep(time.Duration(gofakeit.Number(1, 1000)) * time.Millisecond)
 	}
 }
 
