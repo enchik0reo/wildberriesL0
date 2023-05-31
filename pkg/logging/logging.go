@@ -18,15 +18,6 @@ func New() *Lgr {
 	l := logrus.New()
 	l.SetOutput(io.Discard)
 	l.SetReportCaller(true)
-	l.Formatter = &logrus.TextFormatter{
-		CallerPrettyfier: func(f *runtime.Frame) (function string, file string) {
-			fName := path.Base(f.File)
-			function = fmt.Sprintf("%s()", f.Function)
-			file = fmt.Sprintf("%s:%d", fName, f.Line)
-			return function, file
-		},
-		FullTimestamp: true,
-	}
 
 	if err := os.MkdirAll("logs", 0744); err != nil {
 		panic(err)
@@ -37,12 +28,12 @@ func New() *Lgr {
 		panic(err)
 	}
 
-	l.AddHook(&Hooker1{
+	l.AddHook(&Hook1{
 		Writer:    []io.Writer{fl},
 		LogLevels: logrus.AllLevels,
 	})
 
-	l.AddHook(&Hooker2{
+	l.AddHook(&Hook2{
 		Writer:    []io.Writer{os.Stdout},
 		LogLevels: []logrus.Level{logrus.InfoLevel, logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel},
 	})
@@ -52,16 +43,26 @@ func New() *Lgr {
 	}
 }
 
-type Hooker1 struct {
+type Hook1 struct {
 	Writer    []io.Writer
 	LogLevels []logrus.Level
 }
 
-func (h *Hooker1) Levels() []logrus.Level {
+func (h *Hook1) Levels() []logrus.Level {
 	return h.LogLevels
 }
 
-func (h *Hooker1) Fire(entry *logrus.Entry) error {
+func (h *Hook1) Fire(entry *logrus.Entry) error {
+	entry.Logger.Formatter = &logrus.TextFormatter{
+		CallerPrettyfier: func(f *runtime.Frame) (function string, file string) {
+			fName := path.Base(f.File)
+			function = fmt.Sprintf("%s()", f.Function)
+			file = fmt.Sprintf("%s:%d", fName, f.Line)
+			return function, file
+		},
+		FullTimestamp: true,
+	}
+
 	str, err := entry.String()
 	if err != nil {
 		return err
@@ -73,16 +74,27 @@ func (h *Hooker1) Fire(entry *logrus.Entry) error {
 	return err
 }
 
-type Hooker2 struct {
+type Hook2 struct {
 	Writer    []io.Writer
 	LogLevels []logrus.Level
 }
 
-func (h *Hooker2) Levels() []logrus.Level {
+func (h *Hook2) Levels() []logrus.Level {
 	return h.LogLevels
 }
 
-func (h *Hooker2) Fire(entry *logrus.Entry) error {
+func (h *Hook2) Fire(entry *logrus.Entry) error {
+	entry.Logger.Formatter = &logrus.TextFormatter{
+		ForceColors: true,
+		CallerPrettyfier: func(f *runtime.Frame) (function string, file string) {
+			fName := path.Base(f.File)
+			function = fmt.Sprintf("%s()\nMessage:", f.Function)
+			file = fmt.Sprintf(" | %s:%d |", fName, f.Line)
+			return function, file
+		},
+		FullTimestamp: true,
+	}
+
 	str, err := entry.String()
 	if err != nil {
 		return err
