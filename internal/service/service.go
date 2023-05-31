@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/enchik0reo/wildberriesL0/internal/models"
+	"github.com/enchik0reo/wildberriesL0/pkg/logging"
 )
 
 //go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=Nats
@@ -24,12 +24,14 @@ type Repository interface {
 type Service struct {
 	nats Nats
 	repo Repository
+	log  *logging.Lgr
 }
 
-func New(nats Nats, repo Repository) *Service {
+func New(nats Nats, repo Repository, logger *logging.Lgr) *Service {
 	return &Service{
 		nats: nats,
 		repo: repo,
+		log:  logger,
 	}
 }
 
@@ -43,12 +45,12 @@ func (s *Service) Work(ctx context.Context) {
 
 		uid, err := validate(msg)
 		if err != nil {
-			log.Printf("can't validate message [%s] error: %v", msg, err)
+			s.log.Warnf("can't validate message [%s] error: %v\n", msg, err)
 			continue
 		}
 
 		if err = s.repo.Save(ctx, models.Order{Uid: uid, Details: msg}); err != nil {
-			log.Printf("can't save order with uid [%s]: %v", uid, err)
+			s.log.Warnf("can't save order with uid [%s]: %v\n", uid, err)
 			continue
 		}
 	}

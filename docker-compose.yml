@@ -11,13 +11,13 @@ services:
       POSTGRES_PASSWORD: qwerty
       POSTGRES_DB: orderswb
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
-    - ./script/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./script/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 
   nats-streaming:
     image: nats-streaming:0.25.4-linux
     container_name: nats-streamingL0
     ports:
-    - 4222:4222
+      - "4222:4222"

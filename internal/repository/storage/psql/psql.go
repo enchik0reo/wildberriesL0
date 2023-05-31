@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/enchik0reo/wildberriesL0/internal/models"
+	"github.com/enchik0reo/wildberriesL0/pkg/logging"
 
 	_ "github.com/lib/pq"
 )
@@ -19,10 +20,11 @@ type DB interface {
 }
 
 type Storage struct {
-	db DB
+	db  DB
+	log *logging.Lgr
 }
 
-func New(host, port, user, password, dbname, sslmode string) (*Storage, error) {
+func New(host, port, user, password, dbname, sslmode string, logger *logging.Lgr) (*Storage, error) {
 	connectStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
 
 	db, err := sql.Open("postgres", connectStr)
@@ -34,7 +36,7 @@ func New(host, port, user, password, dbname, sslmode string) (*Storage, error) {
 		return nil, fmt.Errorf("can't connect to database: %w", err)
 	}
 
-	return &Storage{db: db}, nil
+	return &Storage{db: db, log: logger}, nil
 }
 
 func (s *Storage) Save(ctx context.Context, o models.Order) error {
@@ -65,11 +67,15 @@ func (s *Storage) GetAll(ctx context.Context) ([]models.Order, error) {
 	if err != nil {
 		return nil, fmt.Errorf("can't load orders from db: %w", err)
 	}
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		if err := rows.Close(); err != nil {
+			s.log.Errorln(err)
+		}
+	}(rows)
 
 	n, err := rows.Columns()
 	if err != nil {
-		fmt.Printf("can't get the column names: %v", err)
+		s.log.Errorf("can't get the column names: %v\n", err)
 		n = make([]string, 0)
 	}
 

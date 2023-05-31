@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/enchik0reo/wildberriesL0/internal/models"
 
@@ -30,10 +29,10 @@ type Repository struct {
 	cache   Cache
 }
 
-func New(s Storage, c Cache) *Repository {
+func New(s Storage, c Cache) (*Repository, error) {
 	orders, err := s.GetAll(context.Background())
 	if err != nil {
-		log.Printf("can't warmup cache: %s\n", err.Error())
+		return nil, fmt.Errorf("can't warmup cache: %s", err.Error())
 	}
 
 	for _, o := range orders {
@@ -43,7 +42,7 @@ func New(s Storage, c Cache) *Repository {
 	return &Repository{
 		storage: s,
 		cache:   c,
-	}
+	}, nil
 }
 
 func (r *Repository) Save(ctx context.Context, order models.Order) error {

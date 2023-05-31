@@ -2,27 +2,28 @@ package nats
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/enchik0reo/wildberriesL0/pkg/logging"
 	"github.com/nats-io/stan.go"
 )
 
-type NatsConn interface {
+type ConnNats interface {
 	Subscribe(subject string, cb stan.MsgHandler, opts ...stan.SubscriptionOption) (stan.Subscription, error)
 	Close() error
 }
 
 type Stan struct {
-	conn NatsConn
+	conn ConnNats
+	log  *logging.Lgr
 }
 
-func New(clusterID, clientID, url string) (*Stan, error) {
+func New(clusterID, clientID, url string, logger *logging.Lgr) (*Stan, error) {
 	sc, err := stan.Connect(clusterID, clientID, stan.NatsURL(url))
 	if err != nil {
 		return nil, fmt.Errorf("can't connect to nuts: %w", err)
 	}
 
-	return &Stan{conn: sc}, nil
+	return &Stan{conn: sc, log: logger}, nil
 }
 
 func (s *Stan) GetMsg(ch chan []byte) {
@@ -30,7 +31,7 @@ func (s *Stan) GetMsg(ch chan []byte) {
 		ch <- m.Data
 	}, stan.DeliverAllAvailable())
 	if err != nil {
-		log.Fatalf("can't subscribe: %v", err)
+		s.log.Fatalf("can't subscribe: %v\n", err)
 	}
 }
 

@@ -9,7 +9,8 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/lib/pq v1.10.9
 	github.com/nats-io/stan.go v0.10.4
-	github.com/stretchr/testify v1.2.2
+	github.com/sirupsen/logrus v1.9.2
+	github.com/stretchr/testify v1.7.0
 	github.com/vektra/mockery v1.1.2
 )
 
