@@ -11,11 +11,11 @@ go run ./cmd/consumer/main.go
 ```
 go run ./cmd/producer/main.go
 ```
-## Get order by uid from cache:
+## Get order by uid:
 ```
 localhost:4000/order/:uid
 ```
-(uids in this example: order[0-100])
+(uid in this example: order[0-100])
 
 ## Stress Tests
 ### WRK
