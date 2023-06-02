@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/enchik0reo/wildberriesL0/internal/config"
 	"github.com/enchik0reo/wildberriesL0/internal/handlers"
@@ -66,9 +67,7 @@ func New() *App {
 }
 
 func (a *App) Run() {
-	ctx := context.Background()
-
-	go a.service.Work(ctx)
+	go a.service.Work()
 
 	go func() {
 		if err := a.httpServer.Run(a.cfg.Port, a.handler.InitRoute()); err != nil {
@@ -86,6 +85,9 @@ func (a *App) Run() {
 	<-quit
 
 	a.log.Info("Application is shutting down")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	if err := a.httpServer.Stop(ctx); err != nil {
 		a.log.Fatalf("error occured on server shutting down: %s", err.Error())

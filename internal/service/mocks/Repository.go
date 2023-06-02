@@ -28,13 +28,13 @@ func (_m *Repository) CloseConnect(ctx context.Context) error {
 	return r0
 }
 
-// Save provides a mock function with given fields: _a0, _a1
-func (_m *Repository) Save(_a0 context.Context, _a1 models.Order) error {
-	ret := _m.Called(_a0, _a1)
+// Save provides a mock function with given fields: _a0
+func (_m *Repository) Save(_a0 models.Order) error {
+	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.Order) error); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(models.Order) error); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
 	}

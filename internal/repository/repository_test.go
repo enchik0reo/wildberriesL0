@@ -98,7 +98,7 @@ func TestGetMsg(t *testing.T) {
 				storage: storageMc,
 			}
 
-			err := r.Save(tt.args.ctx, tt.args.order)
+			err := r.Save(tt.args.order)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Save() error = %v, wantErr = %v", err, tt.wantErr)
 				return

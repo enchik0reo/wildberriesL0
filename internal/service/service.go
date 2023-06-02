@@ -17,7 +17,7 @@ type Nats interface {
 
 //go:generate go run github.com/vektra/mockery/v2@v2.20.2 --name=Repository
 type Repository interface {
-	Save(context.Context, models.Order) error
+	Save(models.Order) error
 	CloseConnect(ctx context.Context) error
 }
 
@@ -35,7 +35,7 @@ func New(nats Nats, repo Repository, logger *logging.Lgr) *Service {
 	}
 }
 
-func (s *Service) Work(ctx context.Context) {
+func (s *Service) Work() {
 	ch := make(chan []byte)
 
 	go s.nats.GetMsg(ch)
@@ -49,7 +49,7 @@ func (s *Service) Work(ctx context.Context) {
 			continue
 		}
 
-		if err = s.repo.Save(ctx, models.Order{Uid: uid, Details: msg}); err != nil {
+		if err = s.repo.Save(models.Order{Uid: uid, Details: msg}); err != nil {
 			s.log.Warnf("can't save order with uid [%s]: %v\n", uid, err)
 			continue
 		}
