@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/enchik0reo/wildberriesL0/pkg/logging"
+
 	"github.com/nats-io/stan.go"
 )
 
@@ -14,6 +15,7 @@ type ConnNats interface {
 
 type Stan struct {
 	conn ConnNats
+	sub  stan.Subscription
 	log  *logging.Lgr
 }
 
@@ -27,14 +29,31 @@ func New(clusterID, clientID, url string, logger *logging.Lgr) (*Stan, error) {
 }
 
 func (s *Stan) GetMsg(ch chan []byte) {
-	_, err := s.conn.Subscribe("orders", func(m *stan.Msg) {
+	sub, err := s.conn.Subscribe("orders", func(m *stan.Msg) {
 		ch <- m.Data
 	}, stan.DeliverAllAvailable())
 	if err != nil {
 		s.log.Fatalf("can't subscribe: %v\n", err)
 	}
+	s.sub = sub
 }
 
 func (s *Stan) CloseConnect() error {
-	return s.conn.Close()
+	var errors []byte
+
+	if err := s.sub.Unsubscribe(); err != nil {
+		e := fmt.Sprintf("can't unsubscribe to the channel: %s; ", err.Error())
+		errors = append(errors, []byte(e)...)
+	}
+
+	if err := s.conn.Close(); err != nil {
+		e := fmt.Sprintf("can't close connection to the cluster.: %s; ", err.Error())
+		errors = append(errors, []byte(e)...)
+	}
+
+	if len(errors) != 0 {
+		return fmt.Errorf("%s", errors)
+	}
+
+	return nil
 }
