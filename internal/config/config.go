@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
@@ -28,7 +29,8 @@ type Config struct {
 func Load() (*Config, error) {
 	cfg := &Config{}
 
-	if err := cleanenv.ReadConfig("./config/cfg.yml", cfg); err != nil {
+	p := filepath.Join("config", "cfg.yml")
+	if err := cleanenv.ReadConfig(p, cfg); err != nil {
 		_, err = cleanenv.GetDescription(cfg, nil)
 		return nil, err
 	}

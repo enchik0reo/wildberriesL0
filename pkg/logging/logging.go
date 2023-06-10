@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"path/filepath"
 	"runtime"
 
 	"github.com/sirupsen/logrus"
@@ -23,7 +24,8 @@ func New() *Lgr {
 		panic(err)
 	}
 
-	fl, err := os.OpenFile("logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	p := filepath.Join("logs", "all.log")
+	fl, err := os.OpenFile(p, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -53,6 +55,7 @@ func (h *Hook1) Levels() []logrus.Level {
 }
 
 func (h *Hook1) Fire(entry *logrus.Entry) error {
+	entry.Logger.Level = logrus.TraceLevel
 	entry.Logger.Formatter = &logrus.TextFormatter{
 		CallerPrettyfier: func(f *runtime.Frame) (function string, file string) {
 			fName := path.Base(f.File)

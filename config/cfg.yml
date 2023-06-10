@@ -1,5 +1,5 @@
 port: "4000"
-cache_size: 10
+cache_size: 50
 
 nats:
   url: "nats://localhost:4222"

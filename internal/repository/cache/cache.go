@@ -28,15 +28,15 @@ func New(size int) *Cache {
 func (c *Cache) Save(o models.Order) error {
 	if ok := c.Check(o.Uid); !ok {
 		c.Lock()
-		c.m[o.Uid] = o.Details
-		c.Unlock()
-
 		delete(c.m, c.slice[c.count])
+		c.m[o.Uid] = o.Details
+
 		c.slice[c.count] = o.Uid
 		c.count++
 		if c.count >= c.size {
 			c.count = 0
 		}
+		c.Unlock()
 		return nil
 	}
 	return fmt.Errorf("order already exists")
